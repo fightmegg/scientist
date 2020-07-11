@@ -1,0 +1,49 @@
+{
+  "name": "@fightmegg/scientist",
+  "version": "1.0.0",
+  "description": "A JavaScript library for carefully refactoring critical paths",
+  "main": "index.js",
+  "module": "index.esm.js",
+  "sideEffects": false,
+  "scripts": {
+    "test": "jest",
+    "version": "rollup -c"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fightmegg/scientist.git"
+  },
+  "keywords": [
+    "scientist",
+    "experiment",
+    "control",
+    "candidate"
+  ],
+  "author": "Ollie Jennings <ollie@fighme.gg",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fightmegg/scientist/issues"
+  },
+  "homepage": "https://github.com/fightmegg/scientist#readme",
+  "devDependencies": {
+    "@babel/core": "^7.10.2",
+    "@babel/node": "^7.10.1",
+    "@babel/plugin-proposal-class-properties": "^7.10.1",
+    "@babel/plugin-proposal-private-methods": "^7.10.1",
+    "@babel/preset-env": "^7.10.2",
+    "@rollup/plugin-commonjs": "^13.0.0",
+    "@rollup/plugin-node-resolve": "^8.0.1",
+    "@types/jest": "^26.0.0",
+    "babel-jest": "^26.0.1",
+    "core-js": "^3.6.5",
+    "jest": "^26.0.1",
+    "jest-extended": "^0.11.5",
+    "jest-junit": "^10.0.0",
+    "rollup": "^2.16.1",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-terser": "^6.1.0"
+  },
+  "dependencies": {
+    "lodash.isequal": "^4.5.0"
+  }
+}

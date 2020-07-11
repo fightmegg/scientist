@@ -154,23 +154,24 @@ The structure of `result` is:
 ```json
 {
     "name": "<Experiment Name>",
-    "matched": true, // Boolean
-    "execution_order": ["control", "candidate"], // Array e.g. ["candidate", "control"]
+    "matched": true,
+    "execution_order": ["control", "candidate"],
+    "error": false,
     "control": {
-        "duration": 100, // milliseconds,
-        "value": 20, // return of use method
-        "cleaned_value": 20, // see "Keeping it clean" above
-        "startTime": 100002320, // Epoch
-        "endTime": 1000021000, // Epoch
-        "error": "error ...", // new Error
+        "duration": 100,
+        "value": 20, 
+        "cleaned_value": 20, 
+        "startTime": 100002320,
+        "endTime": 1000021000, 
+        "error": "error ...",
     },
     "candidate": {
-        "duration": 100, // milliseconds,
-        "value": 20, // return of use method
-        "cleaned_value": 20, // see "Keeping it clean" above
-        "startTime": 100002320, // Epoch
-        "endTime": 1000021000, // Epoch
-        "error": "error ...", // new Error
+        "duration": 100,
+        "value": 20, 
+        "cleaned_value": 20, 
+        "startTime": 100002320, 
+        "endTime": 1000021000,
+        "error": "error ...",
     },
 }
 ```

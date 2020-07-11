@@ -1,0 +1,10 @@
+src
+npm
+.jest
+.vscode
+.circleci
+babel.config.js
+jest.config.js
+rollup.config.js
+*.spec.js
+*.xml
