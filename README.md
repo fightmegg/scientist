@@ -176,6 +176,19 @@ The structure of `result` is:
 }
 ```
 
+### Handling errors
+
+Scientist handles and tracks all errors raised in a `try` or `use` block. Scientist also calls `publish` which contains all of the information about any errors.
+
+#### In control code
+
+If an error is thrown in a `use` block, it will eventually be thrown by the Scientist module (in order to mimick real world), therefore you will want to handle this properly.
+
+
+#### In candidate code
+
+If an error is thrown in a `try` block, it will be swallowed and not thrown, you will want to handle this in your `publish` block.
+
 ## Breaking the rules
 
 Sometimes it can be useful to break the rules.
