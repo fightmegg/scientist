@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Scientist constructor It throws an error if no experiment name is given 1`] = `"an experiment requires a name"`;
+
+exports[`Scientist run it should call publish before throwing control error 1`] = `"error"`;
+
+exports[`Scientist run it should throw ERROR if candidate set but not enabled 1`] = `"no experiments to run"`;
+
+exports[`Scientist run it should throw ERROR if control nor candidate is set 1`] = `"no experiments to run"`;
+
+exports[`Scientist run it should throw an error if control throws an error 1`] = `"error"`;
+
+exports[`Scientist run_only it should throw ERROR if candidate throws error 1`] = `"error"`;
+
+exports[`Scientist run_only it should throw ERROR if invalid run type 1`] = `"invalid run type"`;
+
+exports[`Scientist run_only it should throw ERROR if no experiment to run 1`] = `"no experiments to run"`;

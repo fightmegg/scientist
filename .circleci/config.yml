@@ -1,0 +1,154 @@
+# CircleCI configuration
+version: 2.1
+
+# Aliases
+aliases:
+  # Caching
+  - &restore-npm-cache
+    keys:
+      - dependency-cache-{{ checksum "package.json" }}
+  - &save-npm-cache
+    key: dependency-cache-{{ checksum "package.json" }}
+    paths:
+      - node_modules
+
+  - &authenticate-github-registry
+    name: Authenticate with Github Package Registry
+    command: |
+      echo "//npm.pkg.github.com/:_authToken=${GITHUB_REGISTRY_TOKEN}" > ~/scientist/.npmrc
+      echo "git-tag-version=false" >> ~/scientist/.npmrc
+  - &authenticate-npm-registry
+    name: Authenticate with NPM Package Registry
+    command: |
+      echo "//registry.npmjs.org/:_authToken=${NPM_REGISTRY_TOKEN}" > ~/scientist/.npmrc
+      echo "git-tag-version=false" >> ~/scientist/.npmrc
+  - &update-pkg-version
+    name: Updating Package Version
+    command: |
+      npm version $CIRCLE_TAG
+      cp package.json ./dist
+      cp package-lock.json ./dist
+      cp LICENSE ./dist
+      cp README.md ./dist
+  - &publish-to-github
+    name: Publish to Github Package Registry
+    command: npm publish dist --tag $PKG_TAG --access public --registry https://npm.pkg.github.com
+
+  - &publish-to-npm
+    name: Publish to NPM Package Registry
+    command: npm publish dist --tag $PKG_TAG --access public --registry https://registry.npmjs.org
+
+# Defaults
+defaults: &defaults
+  working_directory: ~/scientist
+
+js_defaults: &js_defaults
+  <<: *defaults
+  docker:
+    - image: circleci/node:14.4.0-stretch
+
+jobs:
+  # Checkout Env + Deps
+  prepare_environment:
+    <<: *js_defaults
+    steps:
+      - checkout
+      - restore_cache: *restore-npm-cache
+      - run:
+          name: Installing dependencies
+          command: npm ci
+      - save_cache: *save-npm-cache
+      - persist_to_workspace:
+          root: .
+          paths: .
+
+  tests:
+    <<: *js_defaults
+    steps:
+      - attach_workspace:
+          at: ~/scientist
+      - run:
+          name: Running Unit Tests
+          command: npm test -- --ci --runInBand --reporters=default --reporters=jest-junit
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: ./test-results/jest
+            JEST_JUNIT_OUTPUT_NAME: results.xml
+      - store_test_results:
+          path: test-results
+
+  publish_alpha:
+    <<: *js_defaults
+    environment:
+      PKG_TAG: dev
+    steps:
+      - attach_workspace:
+          at: ~/scientist
+      - run: *update-pkg-version
+      - run: *authenticate-github-registry
+      - deploy: *publish-to-github
+      - run: *authenticate-npm-registry
+      - deploy: *publish-to-npm
+
+  publish_beta:
+    <<: *js_defaults
+    environment:
+      PKG_TAG: beta
+    steps:
+      - attach_workspace:
+          at: ~/scientist
+      - run: *update-pkg-version
+      - run: *authenticate-github-registry
+      - deploy: *publish-to-github
+      - run: *authenticate-npm-registry
+      - deploy: *publish-to-npm
+
+  publish_prod:
+    <<: *js_defaults
+    environment:
+      PKG_TAG: latest
+    steps:
+      - attach_workspace:
+          at: ~/scientist
+      - run: *update-pkg-version
+      - run: *authenticate-github-registry
+      - deploy: *publish-to-github
+      - run: *authenticate-npm-registry
+      - deploy: *publish-to-npm
+
+workflows:
+  test-publish:
+    jobs:
+      - prepare_environment:
+          filters: # all branches + tags
+            tags:
+              only: /.*/
+      - tests:
+          requires:
+            - prepare_environment
+          filters: # all branches + tags
+            tags:
+              only: /.*/
+      - publish_alpha:
+          requires:
+            - tests
+          filters: # run for alpha tags only
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^\d+\.\d+\.\d+-alpha\.\d+$/
+      - publish_beta:
+          requires:
+            - tests
+          filters: # run for beta tags only
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^\d+\.\d+\.\d+-beta\.\d+$/
+      - publish_prod:
+          requires:
+            - tests
+          filters: # run for prod tags only
+            tags:
+              only: /^\d+\.\d+\.\d+$/
+            branches:
+              ignore: /.*/
