@@ -298,11 +298,98 @@ describe("Scientist", () => {
     });
   });
 
-  test.todo("run_only should throw error if invalid run type");
+  describe("run_only", () => {
+    let syncExperiment;
+    let asyncExperiment;
 
-  test.todo("run_only should run control and return results");
+    beforeEach(() => {
+      syncExperiment = new Scientist("sync test");
+      asyncExperiment = new Scientist("async test", { async: true });
+    });
 
-  test.todo("run_only should run control and return correct results");
+    test("it should throw ERROR if invalid run type", () => {
+      expect(() =>
+        syncExperiment.run_only("random")
+      ).toThrowErrorMatchingSnapshot();
+    });
 
-  test.todo("run_only should call async runner and return correct results");
+    test("it should throw ERROR if no experiment to run", () => {
+      expect(() =>
+        syncExperiment.run_only("control")
+      ).toThrowErrorMatchingSnapshot();
+    });
+
+    test("it should only run the control and return result", () => {
+      executeSyncAndTime.mockImplementation((f) => f.fn());
+      formatResultsForPublish.mockImplementation(() => ({
+        control: { value: 20 },
+      }));
+
+      const control = jest.fn(() => 20);
+      const candidate = jest.fn(() => 12);
+
+      syncExperiment.use(control);
+      syncExperiment.try(candidate);
+
+      expect(syncExperiment.run_only("control")).toEqual(20);
+      expect(control).toHaveBeenCalledTimes(1);
+      expect(candidate).not.toHaveBeenCalled();
+    });
+
+    test("it should only run candidate, ignoring enabled=false and return candidate result", () => {
+      executeSyncAndTime.mockImplementation((f) => f.fn());
+      formatResultsForPublish.mockImplementation(() => ({
+        candidate: { value: 12 },
+      }));
+
+      const control = jest.fn(() => 20);
+      const candidate = jest.fn(() => 12);
+
+      syncExperiment.enabled(() => false);
+      syncExperiment.use(control);
+      syncExperiment.try(candidate);
+
+      expect(syncExperiment.run_only("candidate")).toEqual(12);
+      expect(control).not.toHaveBeenCalled();
+      expect(candidate).toHaveBeenCalledTimes(1);
+    });
+
+    test("it should throw ERROR if candidate throws error", () => {
+      executeSyncAndTime.mockImplementation((f) => f.fn());
+      formatResultsForPublish.mockImplementation(() => ({
+        candidate: { value: 12, error: new Error("error") },
+      }));
+
+      const control = jest.fn(() => 20);
+      const candidate = jest.fn(() => 12);
+
+      syncExperiment.enabled(() => false);
+      syncExperiment.use(control);
+      syncExperiment.try(candidate);
+
+      expect(() =>
+        syncExperiment.run_only("candidate")
+      ).toThrowErrorMatchingSnapshot();
+      expect(control).not.toHaveBeenCalled();
+      expect(candidate).toHaveBeenCalledTimes(1);
+    });
+
+    describe("async", () => {
+      test("it should call the async runner and return control result", async () => {
+        executeAsyncAndTime.mockImplementation(async (f) => await f.fn());
+        formatResultsForPublish.mockImplementation(() => ({
+          control: { value: 20 },
+        }));
+
+        const control = jest.fn().mockResolvedValue(20);
+        const candidate = jest.fn().mockResolvedValue(12);
+        asyncExperiment.use(control);
+        asyncExperiment.try(candidate);
+
+        await expect(asyncExperiment.run_only("control")).resolves.toEqual(20);
+        expect(control).toHaveBeenCalledTimes(1);
+        expect(candidate).not.toHaveBeenCalled();
+      });
+    });
+  });
 });

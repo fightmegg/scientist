@@ -79,22 +79,22 @@ class Scientist {
   }
 
   // Async Runner
-  #runAsync(experiments) {
+  #runAsync(experiments, type = "control") {
     return Promise.all(experiments.map(executeAsyncAndTime)).then((results) => {
       const formattedResults = this.#format(experiments, results);
       this.#publishFn(formattedResults);
-      if (formattedResults.control?.error) throw formattedResults.control.error;
-      return formattedResults.control?.value;
+      if (formattedResults[type]?.error) throw formattedResults[type].error;
+      return formattedResults[type]?.value;
     });
   }
 
   // Sync Runner
-  #runSync(experiments) {
+  #runSync(experiments, type = "control") {
     const results = experiments.map(executeSyncAndTime);
     const formattedResults = this.#format(experiments, results);
     this.#publishFn(formattedResults);
-    if (formattedResults.control?.error) throw formattedResults.control.error;
-    return formattedResults.control?.value;
+    if (formattedResults[type]?.error) throw formattedResults[type].error;
+    return formattedResults[type]?.value;
   }
 
   // Run
@@ -116,14 +116,16 @@ class Scientist {
   // Run Only
   run_only(type) {
     if (type !== "control" && type !== "candidate")
-      throw new Error("invalud run type");
+      throw new Error("invalid run type");
 
-    const experiments = [this[`#${type}`]].filter(Boolean);
+    const experiments = [
+      type === "control" ? this.#control : this.#candidate,
+    ].filter(Boolean);
     if (!experiments.length) throw new Error("no experiments to run");
 
     // run
-    if (this.#options.async) return this.#runAsync(experiments);
-    return this.#runSync(experiments);
+    if (this.#options.async) return this.#runAsync(experiments, type);
+    return this.#runSync(experiments, type);
   }
 }
 
