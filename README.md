@@ -47,12 +47,12 @@ Pass your original code to the `use` function, and pass your new code / behaviou
 
 The `use` function is called the **control**. The `try` function is called the **candidate**
 
-If you do not declare a **candidate**, then the control is already ran and returned.
+If you do not declare a **candidate**, then the control is always ran and returned.
 
 
 ## Creating useful experiments
 
-The examples above are rather basic, lets improve upon that:
+The examples above are rather basic, the `try` blocks don't run yet, and none of the results get published, lets improve upon that:
 
 ```js
 const experiment = new Scientist('experiment #1', { async: true });
