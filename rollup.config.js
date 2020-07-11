@@ -3,8 +3,6 @@ import commonjs from "@rollup/plugin-commonjs";
 import resolve from "@rollup/plugin-node-resolve";
 import { terser } from "rollup-plugin-terser";
 
-const isProd = process.env.NODE_ENV === "production";
-
 export default {
   input: "src/index.js",
   output: [
@@ -17,5 +15,5 @@ export default {
       format: "esm",
     },
   ],
-  plugins: [resolve(), babel(), commonjs(), isProd && terser()],
+  plugins: [resolve(), babel(), commonjs(), terser()],
 };
