@@ -47,12 +47,12 @@ Pass your original code to the `use` function, and pass your new code / behaviou
 
 The `use` function is called the **control**. The `try` function is called the **candidate**
 
-If you do not declare a **candidate**, then the control is already ran and returned.
+If you do not declare a **candidate**, then the control is always ran and returned.
 
 
 ## Creating useful experiments
 
-The examples above are rather basic, lets improve upon that:
+The examples above are rather basic, the `try` blocks don't run yet, and none of the results get published, lets improve upon that:
 
 ```js
 const experiment = new Scientist('experiment #1', { async: true });
@@ -175,6 +175,19 @@ The structure of `result` is:
     },
 }
 ```
+
+### Handling errors
+
+Scientist handles and tracks all errors raised in a `try` or `use` block. Scientist also calls `publish` which contains all of the information about any errors.
+
+#### In control code
+
+If an error is thrown in a `use` block, it will eventually be thrown by the Scientist module (in order to mimick real world), therefore you will want to handle this properly.
+
+
+#### In candidate code
+
+If an error is thrown in a `try` block, it will be swallowed and not thrown, you will want to handle this in your `publish` block.
 
 ## Breaking the rules
 
