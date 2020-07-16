@@ -5,10 +5,10 @@ const isEnvTest = env === "test";
 const envPreset = [
   require.resolve("@babel/preset-env"),
   {
-    useBuiltIns: "usage",
+    useBuiltIns: "entry",
     corejs: "core-js@3",
     modules: false,
-    targets: { node: "current" },
+    targets: "> 0.25%, not dead",
   },
 ];
 

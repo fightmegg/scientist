@@ -15,5 +15,12 @@ export default {
       format: "esm",
     },
   ],
-  plugins: [resolve(), babel(), commonjs(), terser()],
+  plugins: [
+    resolve(),
+    babel({
+      exclude: /node_modules/,
+    }),
+    commonjs(),
+    terser(),
+  ],
 };
