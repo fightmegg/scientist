@@ -76,8 +76,9 @@ jobs:
       - store_test_results:
           path: test-results
       - store_artifacts:
-          path: .jest/coverage
           path: test-results
+      - store_artifacts:
+          path: .jest/coverage
 
   publish_alpha:
     <<: *js_defaults
