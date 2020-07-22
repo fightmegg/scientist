@@ -17,11 +17,13 @@ aliases:
     command: |
       echo "//npm.pkg.github.com/:_authToken=${GITHUB_REGISTRY_TOKEN}" > ~/scientist/.npmrc
       echo "git-tag-version=false" >> ~/scientist/.npmrc
+      echo "allow-same-version=true" >> ~/scientist/.npmrc
   - &authenticate-npm-registry
     name: Authenticate with NPM Package Registry
     command: |
       echo "//registry.npmjs.org/:_authToken=${NPM_REGISTRY_TOKEN}" > ~/scientist/.npmrc
       echo "git-tag-version=false" >> ~/scientist/.npmrc
+      echo "allow-same-version=true" >> ~/scientist/.npmrc
   - &update-pkg-version
     name: Updating Package Version
     command: |
@@ -45,7 +47,7 @@ defaults: &defaults
 js_defaults: &js_defaults
   <<: *defaults
   docker:
-    - image: circleci/node:14.4.0-stretch
+    - image: circleci/node:14.5.0-stretch
 
 jobs:
   # Checkout Env + Deps
@@ -80,36 +82,14 @@ jobs:
       - store_artifacts:
           path: .jest/coverage
 
-  publish_alpha:
+  publish:
     <<: *js_defaults
+    parameters:
+      PKG_TAG:
+        type: string
     environment:
-      PKG_TAG: dev
-    steps:
-      - attach_workspace:
-          at: ~/scientist
-      - run: *update-pkg-version
-      - run: *authenticate-github-registry
-      - deploy: *publish-to-github
-      - run: *authenticate-npm-registry
-      - deploy: *publish-to-npm
-
-  publish_beta:
-    <<: *js_defaults
-    environment:
-      PKG_TAG: beta
-    steps:
-      - attach_workspace:
-          at: ~/scientist
-      - run: *update-pkg-version
-      - run: *authenticate-github-registry
-      - deploy: *publish-to-github
-      - run: *authenticate-npm-registry
-      - deploy: *publish-to-npm
-
-  publish_prod:
-    <<: *js_defaults
-    environment:
-      PKG_TAG: latest
+      PKG_TAG: << parameters.PKG_TAG >>
+      NODE_ENV: production
     steps:
       - attach_workspace:
           at: ~/scientist
@@ -132,7 +112,9 @@ workflows:
           filters: # all branches + tags
             tags:
               only: /.*/
-      - publish_alpha:
+      - publish:
+          name: publish-alpha
+          PKG_TAG: dev
           requires:
             - tests
           filters: # run for alpha tags only
@@ -140,7 +122,9 @@ workflows:
               ignore: /.*/
             tags:
               only: /^\d+\.\d+\.\d+-alpha\.\d+$/
-      - publish_beta:
+      - publish:
+          name: publish-beta
+          PKG_TAG: beta
           requires:
             - tests
           filters: # run for beta tags only
@@ -148,7 +132,9 @@ workflows:
               ignore: /.*/
             tags:
               only: /^\d+\.\d+\.\d+-beta\.\d+$/
-      - publish_prod:
+      - publish:
+          name: publish-prod
+          PKG_TAG: latest
           requires:
             - tests
           filters: # run for prod tags only
