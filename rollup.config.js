@@ -18,6 +18,7 @@ export default {
   plugins: [
     resolve(),
     babel({
+      runtimeHelpers: true,
       exclude: /node_modules/,
     }),
     commonjs(),
