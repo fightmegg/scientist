@@ -5,7 +5,7 @@ declare module '@fightmegg/scientist' {
     enabled(enabledFn: () => boolean): void;
     publish(publishFn: (results: ExperimentResults<TControl, TCandidate, TCleanResult>) => void): void;
     clean(cleanFn: (value: TControl | TCandidate) => TCleanResult): void;
-    
+
     use(controlFn: () => any): void;
     try(candidateFn: () => any): void;
 
@@ -23,8 +23,8 @@ declare module '@fightmegg/scientist' {
   export type ControlOrCandidate = 'control' | 'candidate';
 
   export interface ExperimentResults<TControl = any, TCandidate = TControl, TCleanResult = TControl> {
-    control: ExperimentValue<TControl, TCleanResult>;
-    candidate: ExperimentValue<TCandidate, TCleanResult>;
+    control?: ExperimentValue<TControl, TCleanResult>;
+    candidate?: ExperimentValue<TCandidate, TCleanResult>;
     execution_order: ControlOrCandidate[];
     error: boolean;
     name: string;
@@ -32,12 +32,12 @@ declare module '@fightmegg/scientist' {
   }
 
   export interface ExperimentValue<TResult = any, TCleanResult = TResult> {
-    value: TResult;
-    cleaned_value: TCleanResult;
+    value?: TResult;
+    cleaned_value?: TCleanResult;
+    error?: Error;
     duration: number;
     start_time: number;
     end_time: number;
-    error?: any;
   }
 
   export default Scientist;
