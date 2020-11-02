@@ -9,8 +9,8 @@ declare module '@fightmegg/scientist' {
     use(controlFn: () => any): void;
     try(candidateFn: () => any): void;
 
-    run(): void;
-    run(): Promise<void>;
+    run(): TCandidate;
+    run(): Promise<TCandidate>;
 
     run_only(which: ControlOrCandidate): void;
     run_only(which: ControlOrCandidate): Promise<void>;
