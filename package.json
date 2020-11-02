@@ -4,6 +4,7 @@
   "description": "A JavaScript library for carefully refactoring critical paths",
   "main": "index.js",
   "module": "index.esm.js",
+  "types": "index.d.ts",
   "sideEffects": false,
   "scripts": {
     "test": "jest",
@@ -41,6 +42,7 @@
     "jest-junit": "^12.0.0",
     "rollup": "^2.26.5",
     "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-copy": "^3.3.0",
     "rollup-plugin-terser": "^7.0.0"
   },
   "dependencies": {
