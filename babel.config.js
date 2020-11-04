@@ -26,6 +26,12 @@ const envPresetTest = [
 const commonPlugins = [
   [require.resolve("@babel/plugin-proposal-class-properties"), { lose: true }],
   [require.resolve("@babel/plugin-proposal-private-methods"), { lose: true }],
+  [
+    require.resolve("@babel/plugin-transform-runtime"),
+    {
+      regenerator: true,
+    },
+  ],
 ];
 
 // Export
