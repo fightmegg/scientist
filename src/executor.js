@@ -1,5 +1,5 @@
 const getEpochTime = () => {
-  if (window?.performance?.timing)
+  if (typeof window !== "undefined" && window?.performance?.timing)
     return parseInt(
       window.performance.timing.navigationStart + window.performance.now(),
       10
