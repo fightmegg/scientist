@@ -1,6 +1,6 @@
 {
-  "name": "@fightmegg/scientist",
-  "version": "1.0.0",
+  "name": "@stuarthadfield/scientist",
+  "version": "1.0.1",
   "description": "A JavaScript library for carefully refactoring critical paths",
   "main": "index.js",
   "module": "index.esm.js",
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fightmegg/scientist.git"
+    "url": "git+https://github.com/stuarthadfieldglobality/scientist.git"
   },
   "keywords": [
     "scientist",
@@ -46,6 +46,7 @@
     "rollup-plugin-terser": "^7.0.0"
   },
   "dependencies": {
+    "@babel/plugin-transform-runtime": "^7.13.10",
     "lodash.isequal": "^4.5.0"
   }
 }

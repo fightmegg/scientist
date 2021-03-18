@@ -1,7 +1,7 @@
-import babel from "rollup-plugin-babel";
-import copy from 'rollup-plugin-copy'
 import commonjs from "@rollup/plugin-commonjs";
 import resolve from "@rollup/plugin-node-resolve";
+import babel from "rollup-plugin-babel";
+import copy from 'rollup-plugin-copy';
 import { terser } from "rollup-plugin-terser";
 
 export default {
@@ -19,6 +19,7 @@ export default {
   plugins: [
     resolve(),
     babel({
+      runtimeHelpers: true,
       exclude: /node_modules/,
     }),
     commonjs(),
