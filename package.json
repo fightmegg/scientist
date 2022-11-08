@@ -35,7 +35,7 @@
     "@rollup/plugin-commonjs": "^16.0.0",
     "@rollup/plugin-node-resolve": "^10.0.0",
     "@types/jest": "^26.0.10",
-    "babel-jest": "^26.3.0",
+    "babel-jest": "^29.3.0",
     "core-js": "^3.6.5",
     "jest": "^26.4.2",
     "jest-extended": "^0.11.5",
